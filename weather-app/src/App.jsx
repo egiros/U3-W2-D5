@@ -19,8 +19,8 @@ function App() {
           <Route path="/five-day" element={<FiveDay />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Footer className="mt-5" />
       </BrowserRouter>
+      <Footer className="mt-5" />
     </div>
   );
 }
