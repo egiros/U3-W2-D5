@@ -5,32 +5,27 @@ const NavBar = ({ brand, claim }) => {
   const location = useLocation();
   console.log("LOCATION", location);
 
-  //   const isValidLocation =
-  //     location.pathname === "/" ||
-  //     location.pathname === "/prenotazioni" ||
-  //     location.pathname === "/prenota" ||
-  //     location.pathname.includes("menu");
-
-  // ignorerà la visualizzazione della navbar per tutte le rotte non valide
-
-  //   if (isValidLocation) {
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar
+      expand="lg"
+      className="bg-body-transparent border-bottom border-white"
+      style={{ position: "stiky", top: 0, width: "100%" }}
+    >
       <Container fluid="xl">
-        <Navbar.Brand href="#home">
-          {brand} — {claim}
+        <Navbar.Brand href="/" style={{ color: "white" }}>
+          {brand} - {claim}
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <NavLink to="/" className="nav-link">
+            <NavLink to="/" className="nav-link text-white">
               Home
             </NavLink>
-            <NavLink to="/prenotazioni" className="nav-link">
-              Preferiti
+            <NavLink to="/five-day" className="nav-link text-white">
+              Meteo per i prossimi 5 Giorni
             </NavLink>
-            <NavLink to="/menu" className="nav-link">
-              Impostazioni
+            <NavLink to="/preferiti" className="nav-link text-white">
+              Preferiti
             </NavLink>
           </Nav>
         </Navbar.Collapse>
@@ -38,6 +33,5 @@ const NavBar = ({ brand, claim }) => {
     </Navbar>
   );
 };
-// };
 
 export default NavBar;

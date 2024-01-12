@@ -28,6 +28,14 @@
   color: #61dafb;
 }
 
+.app-container {
+  background: rgb(238, 49, 132);
+  background: linear-gradient(190deg, rgba(238, 49, 132, 1) 0%, rgba(0, 44, 96, 1) 100%);
+  /* Aggiungi i colori del tuo gradiente qui */
+  min-height: 100vh; /* Imposta l'altezza minima per riempire almeno l'intera altezza della finestra del browser */
+  padding-bottom: 20px; /* Aggiungi il padding desiderato alla parte inferiore del contenuto */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import { ApiKey } from "../helper/api";
 
 const Home = () => {
@@ -35,7 +35,7 @@ const Home = () => {
 
   const getWeather = async () => {
     try {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${ApiKey}`);
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${ApiKey}&lang=it`);
 
       if (!response.ok) {
         throw new Error("Errore nel recupero dei dati meteorologici");
@@ -62,16 +62,15 @@ const Home = () => {
   };
 
   return (
-    <Container className="container">
+    <Container className="container text-white">
       <Row>
         <Col xs={3} md={2}></Col>
         <Col xs={6} md={8}>
-          <h1 className="display-3 my-5">Weather EpicApp</h1>
           <Form.Group controlId="formCity">
             <Form.Label className="display-6 my-5">Inserisci la città</Form.Label>
             <Form.Control type="text" placeholder="Città" value={city} onChange={(e) => setCity(e.target.value)} />
           </Form.Group>
-          <Button className="mt-5" variant="primary" onClick={getWeather}>
+          <Button className="border-white text-white mt-5" variant="trasparent" onClick={getWeather}>
             Ottieni informazioni Meteo
           </Button>
         </Col>
@@ -81,28 +80,41 @@ const Home = () => {
       {weatherData && (
         <Container>
           <Row className="my-5">
-            <Col>
-              <h3>Ecco le previsioni Meteo previste per oggi a:</h3>
-              <h2 className="display-3 my-3">{weatherData.name}</h2>
-              <h3 className="my-3">{currentDateTime}</h3>
-              <p>
-                Condizioni del cielo: <strong>{weatherData.weather[0].description}</strong>
-              </p>
-              <p>
-                Temperatura: <strong>{weatherData.main.temp}°C</strong>
-              </p>
-              <p>
-                MIN: <strong>{weatherData.main.temp_min}°C</strong>
-              </p>
-              <p>
-                MAX: <strong>{weatherData.main.temp_max}°C</strong>
-              </p>
-              <p>
-                Pressione: <strong>{weatherData.main.pressure}</strong>
-              </p>
-              <p>
-                Vento: <strong>{weatherData.wind.speed} km/h</strong>
-              </p>
+            <h3>Ecco le previsioni Meteo previste per oggi a:</h3>
+            <h2 className="display-3 my-3">{weatherData.name}</h2>
+            <Col xs={{ span: 6, offset: 3 }}>
+              <Card className="my-5">
+                <Card.Img
+                  className="img-fluid"
+                  variant="top"
+                  src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@4x.png`}
+                />
+                <Card.Body>
+                  <Card.Title>
+                    <h2 className="display-3 my-3">{weatherData.name}</h2>
+                  </Card.Title>
+                  <Card.Text>
+                    <p>
+                      Condizioni del cielo: <strong>{weatherData.weather[0].description}</strong>
+                    </p>
+                    <p>
+                      Temperatura: <strong>{weatherData.main.temp}°C</strong>
+                    </p>
+                    <p>
+                      MIN: <strong>{weatherData.main.temp_min}°C</strong>
+                    </p>
+                    <p>
+                      MAX: <strong>{weatherData.main.temp_max}°C</strong>
+                    </p>
+                    <p>
+                      Pressione: <strong>{weatherData.main.pressure}</strong>
+                    </p>
+                    <p>
+                      Vento: <strong>{weatherData.wind.speed} km/h</strong>
+                    </p>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
             </Col>
           </Row>
         </Container>
