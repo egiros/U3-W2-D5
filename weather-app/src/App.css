@@ -34,6 +34,26 @@
   min-height: 100vh;
 }
 
+a,
+button {
+  cursor: pointer;
+}
+
+button {
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background: #df3281;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

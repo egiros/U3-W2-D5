@@ -6,13 +6,14 @@ const NavBar = ({ brand, claim }) => {
   console.log("LOCATION", location);
 
   return (
-    <Navbar
-      expand="lg"
-      className="bg-body-transparent border-bottom border-white"
-      style={{ position: "stiky", top: 0, width: "100%" }}
-    >
+    <Navbar expand="lg" className="navbar bg-body-transparent border-bottom border-white">
       <Container fluid="xl">
         <Navbar.Brand href="/" style={{ color: "white" }}>
+          <img
+            src="https://cdn.icon-icons.com/icons2/565/PNG/512/clear-sun_icon-icons.com_54320.png"
+            alt="img"
+            style={{ color: "white", width: "30px" }}
+          />
           {brand} - {claim}
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

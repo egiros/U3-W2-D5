@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="App app-container">
       <BrowserRouter>
-        <NavBar brand="Weather" claim="EpicApp" className="mb-5" />
+        <NavBar brand=" Weather" claim="EpicApp" className="mb-5" />
         <Welcome />
         <Routes>
           <Route path="/" element={<Home className="mt-5" fontSize="fs-1" textSize="fs-5" />} />

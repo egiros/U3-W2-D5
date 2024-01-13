@@ -1,20 +1,33 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { ApiKey } from "../helper/api";
 
 const FiveDay = () => {
   const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState(null);
 
-  const convertToCelsius = (temperature) => {
-    const celsius = temperature - 273.15;
-    return Math.round(celsius * 10) / 10;
+  const formatDateTime = (dateTimeString) => {
+    const optionsDay = {
+      weekday: "long", // Nome del giorno della settimana
+    };
+    const optionsTime = {
+      hour: "numeric", // Ora nel formato numerico
+      minute: "numeric", // Minuto nel formato numerico
+    };
+
+    const date = new Date(dateTimeString);
+
+    const dayOfWeek = date.toLocaleString("it-IT", optionsDay);
+    const capitalizedDay = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+    const time = date.toLocaleString("it-IT", optionsTime);
+
+    return { dayOfWeek: capitalizedDay, time };
   };
 
   const getWeather = async () => {
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${ApiKey}&lang=it`
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${ApiKey}&lang=it&units=metric`
       );
 
       if (!response.ok) {
@@ -25,16 +38,21 @@ const FiveDay = () => {
 
       const extractedData = {
         city: data.city.name,
-        list: data.list.map((item) => ({
-          date: item.dt_txt,
-          description: item.weather[0].description,
-          temperature: convertToCelsius(item.main.temp),
-          minTemperature: convertToCelsius(item.main.temp_min),
-          maxTemperature: convertToCelsius(item.main.temp_max),
-          pressure: item.main.pressure,
-          windSpeed: item.wind.speed,
-          icon: `http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
-        })),
+        list: data.list.map((item) => {
+          const { dayOfWeek, time } = formatDateTime(item.dt_txt);
+          return {
+            dayOfWeek,
+            time,
+            description: item.weather[0].description,
+            temperature: item.main.temp.toFixed(1),
+            minTemperature: item.main.temp_min.toFixed(1),
+            maxTemperature: item.main.temp_max.toFixed(1),
+            pressure: item.main.pressure,
+            windSpeed: item.wind.speed,
+            icon: `http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
+            rain: item.rain ? item.rain["3h"] : null,
+          };
+        }),
       };
 
       setWeatherData(extractedData);
@@ -48,12 +66,12 @@ const FiveDay = () => {
       <Row>
         <Col xs={3} md={2}></Col>
         <Col xs={6} md={8}>
-          <p className="display-6">Controlla il Meteo per i prossimi 5 giorni</p>
+          <p className="display-6 fs-3">Controlla il Meteo per i prossimi 5 giorni</p>
           <Form.Group controlId="formCity">
             <Form.Label className="display-6 my-5">Inserisci la città</Form.Label>
             <Form.Control type="text" placeholder="Città" value={city} onChange={(e) => setCity(e.target.value)} />
           </Form.Group>
-          <Button className="border-white text-white mt-5" variant="trasparent" onClick={getWeather}>
+          <Button className="border-white text-white shadow-lg mt-5" variant="transparent" onClick={getWeather}>
             Ottieni informazioni Meteo
           </Button>
         </Col>
@@ -64,45 +82,66 @@ const FiveDay = () => {
         <Container>
           <Row className="my-5">
             <Col>
-              <h3>Ecco le previsioni Meteo previste per oggi a </h3>
-              <h2 className="display-3">{weatherData.city}:</h2>
-              <Row className="my-5">
-                {weatherData.list.map((item, index) => (
-                  <Col xs={12} md={6} lg={2}>
-                    <div key={index} className="my-4">
-                      <Card>
-                        <Card.Img className="img-fluid" variant="top" src={item.icon} />
-                        <Card.Body>
-                          <Card.Title>
-                            <h2 className="display-3 my-3">{weatherData.name}</h2>
-                          </Card.Title>
-                          <Card.Text>
-                            <h4>{item.date}</h4>
-                            <p>
-                              Condizioni del cielo: <strong>{item.description}</strong>
-                            </p>
-                            <p>
-                              Temperatura: <strong>{item.temperature}°C</strong>
-                            </p>
-                            <p>
-                              MIN: <strong>{item.minTemperature}°C</strong>
-                            </p>
-                            <p>
-                              MAX: <strong>{item.maxTemperature}°C</strong>
-                            </p>
-                            <p>
-                              Pressione: <strong>{item.pressure}</strong>
-                            </p>
-                            <p>
-                              Vento: <strong>{item.windSpeed} km/h</strong>
-                            </p>
-                          </Card.Text>
-                        </Card.Body>
-                      </Card>
-                    </div>
-                  </Col>
-                ))}
-              </Row>
+              <h3>Previsioni Meteo per</h3>
+              <h2 className="display-3 my-4" style={{ fontWeight: "bold" }}>
+                {weatherData.city}:
+              </h2>
+              {weatherData.list.map((item, index) => (
+                <div
+                  className="shadow-lg"
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    borderRadius: "10px",
+                  }}
+                  key={index}
+                >
+                  <Row className="g-3 my-4">
+                    <Col>
+                      <img className="img-fluid" src={item.icon} alt="icon" />
+                    </Col>
+                    <Col>
+                      <h4 className="fs-2" style={{ fontWeight: "bold" }}>
+                        {item.dayOfWeek}
+                      </h4>
+                      <p>ore: {item.time}</p>
+                    </Col>
+                    <Col className="d-none d-md-block">
+                      <p>Condizioni del cielo:</p>
+                      <p>
+                        <strong>{item.description}</strong>
+                      </p>
+                      {item.rain !== null && (
+                        <p>
+                          Pioggia (ultime 3 ore): <strong>{item.rain} mm</strong>
+                        </p>
+                      )}
+                    </Col>
+                    <Col className="d-none d-md-block">
+                      <p>
+                        Temperatura: <strong>{item.temperature}°C</strong>
+                      </p>
+                      <p>
+                        MIN: <strong>{item.minTemperature}°C</strong>
+                      </p>
+                      <p>
+                        MAX: <strong>{item.maxTemperature}°C</strong>
+                      </p>
+                    </Col>
+                    <Col className="d-none d-lg-block">
+                      <p>Pressione atmosferica:</p>
+                      <p>
+                        <strong>{(item.pressure * 0.75006).toFixed(1)} hPa</strong>
+                      </p>
+                    </Col>
+                    <Col className="d-none d-lg-block">
+                      <p>Vento:</p>
+                      <p>
+                        <strong>{item.windSpeed} km/h</strong>
+                      </p>
+                    </Col>
+                  </Row>
+                </div>
+              ))}
             </Col>
           </Row>
         </Container>
